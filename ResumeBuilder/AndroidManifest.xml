@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.resumebuilder"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="21" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".Main"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".CreateResume"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".EducationalFragment"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".ExtraCurrFragment"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".InterestFragment"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".PersonalDetailsFragment"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".ProjectsFragment"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".SkillsFragment"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".WorkExperienceFragment"
+            android:label="@string/app_name" >
+        </activity>
+    </application>
+
+</manifest>
