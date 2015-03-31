@@ -1,11 +1,11 @@
 package com.example.resumebuilder;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,7 +14,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 @SuppressLint("NewApi")
-public class CreateResume extends Activity implements OnItemClickListener {
+public class CreateResume extends ActionBarActivity implements
+		OnItemClickListener {
 
 	ListView mDrawerList;
 	DrawerLayout mDrawerLayout;
@@ -88,7 +89,7 @@ public class CreateResume extends Activity implements OnItemClickListener {
 			mDrawerLayout.closeDrawer(mDrawerList);
 		} else {
 			// error in creating fragment
-			Log.e("MainActivity", "Error in creating fragment");
+			Log.e("Create Resume", "Error in creating fragment");
 		}
 	}
 
