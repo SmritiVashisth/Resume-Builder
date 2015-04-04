@@ -9,10 +9,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class Database extends SQLiteOpenHelper {
 
 	private static final int DATABASE_VERSION = 1;
+	private static final String DATABASE_NAME = "resume";
 
 	// table_names
 	private static final String TABLE_PERSONAL_DETAILS = "personal_details";
-	
+
 	// common key for all tables
 	private static final String KEY_NAME = "name";
 
@@ -27,8 +28,8 @@ public class Database extends SQLiteOpenHelper {
 	private static final String KEY_PERMADDR = "permaddr";
 	private static final String KEY_CURRADDR = "curraddr";
 
-	public Database(Context context, String name) {
-		super(context, name, null, DATABASE_VERSION);
+	public Database(Context context) {
+		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -54,7 +55,7 @@ public class Database extends SQLiteOpenHelper {
 
 	// PERSONAL DETAILS TABLE METHODS
 
-	public void createPersonalDetails(PersonalDetails personaldetails) {
+	public void addPersonalDetails(PersonalDetails personaldetails) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(KEY_NAME, personaldetails.getName());
