@@ -5,10 +5,36 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="interests fragment"
+        android:text="Areas of Interest"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <ListView
+        android:id="@+id/lvInterests"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </ListView>
+
+    <EditText
+        android:id="@+id/etInterest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10" >
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/btnAddInterest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Areas of Interests" />
+
+    <Button
+        android:id="@+id/btnSaveInterest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save Data" />
 
 </LinearLayout>
