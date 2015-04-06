@@ -1,5 +1,7 @@
 package com.example.resumebuilder;
 
+import java.util.ArrayList;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -13,9 +15,10 @@ public class Database extends SQLiteOpenHelper {
 
 	// table_names
 	private static final String TABLE_PERSONAL_DETAILS = "personal_details";
+	private static final String TABLE_INTERESTS = "areas_of_interest";
 
 	// common key for all tables
-	private static final String KEY_NAME = "name";
+	private static final String KEY_NAME = "_name";
 
 	// personal_details columns
 	private static final String KEY_EMAIL = "email";
@@ -28,6 +31,10 @@ public class Database extends SQLiteOpenHelper {
 	private static final String KEY_PERMADDR = "permaddr";
 	private static final String KEY_CURRADDR = "curraddr";
 
+	// interests columns
+	private static final String KEY_INTERESTS = "interests";
+	private static final String KEY_ID = "_id";
+
 	public Database(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		// TODO Auto-generated constructor stub
@@ -37,18 +44,24 @@ public class Database extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		// TODO Auto-generated method stub
 		String CREATE_TABLE_PERSONAL_DETAILS = "CREATE TABLE "
-				+ TABLE_PERSONAL_DETAILS + "(" + KEY_NAME + " PRIMARY KEY,"
+				+ TABLE_PERSONAL_DETAILS + " ( " + KEY_NAME + " PRIMARY KEY,"
 				+ KEY_EMAIL + " TEXT," + KEY_CONTACT + " TEXT,"
-				+ KEY_EMPLOYMENT + "TEXT," + KEY_FATHER + "TEXT," + KEY_GENDER
-				+ "TEXT," + KEY_CATEGORY + "TEXT," + KEY_DOB + "TEXT,"
-				+ KEY_PERMADDR + "TEXT," + KEY_CURRADDR + "TEXT);";
+				+ KEY_EMPLOYMENT + " TEXT," + KEY_FATHER + " TEXT,"
+				+ KEY_GENDER + " TEXT," + KEY_CATEGORY + " TEXT," + KEY_DOB
+				+ " TEXT," + KEY_PERMADDR + " TEXT," + KEY_CURRADDR + " TEXT);";
 		db.execSQL(CREATE_TABLE_PERSONAL_DETAILS);
+
+	/*	String CREATE_TABLE_INTERESTS = "CREATE TABLE" + TABLE_INTERESTS + " ("
+				+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME
+				+ " TEXT," + KEY_INTERESTS + " TEXT);";
+		db.execSQL(CREATE_TABLE_INTERESTS); */
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// TODO Auto-generated method stub
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_PERSONAL_DETAILS);
+	//	db.execSQL("DROP TABLE IF EXISTS " + TABLE_INTERESTS);
 		onCreate(db);
 
 	}
@@ -73,10 +86,10 @@ public class Database extends SQLiteOpenHelper {
 	}
 
 	public PersonalDetails getPersonalDetails(String person) {
-
+	
 		SQLiteDatabase db = this.getReadableDatabase();
 		String selectQuery = "SELECT  * FROM " + TABLE_PERSONAL_DETAILS
-				+ " WHERE " + KEY_NAME + " = " + person;
+				+ " WHERE " + KEY_NAME + " = " + "'" + person + "'";
 
 		Cursor c = db.rawQuery(selectQuery, null);
 		if (c != null)
@@ -93,6 +106,7 @@ public class Database extends SQLiteOpenHelper {
 		details.setDOB(c.getString(c.getColumnIndex(KEY_DOB)));
 		details.setPermaddr(c.getString(c.getColumnIndex(KEY_PERMADDR)));
 		details.setCurraddr(c.getString(c.getColumnIndex(KEY_CURRADDR)));
+		c.close();
 
 		return details;
 	}
@@ -105,4 +119,43 @@ public class Database extends SQLiteOpenHelper {
 
 	}
 
+	// INTERESTS TABLE METHODS
+
+	public void addInterests(String person, ArrayList<String> interests) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		int size = interests.size();
+		for (int i = 0; i < size; i++) {
+			ContentValues values = new ContentValues();
+			values.put(KEY_NAME, person);
+			values.put(KEY_INTERESTS, interests.get(i));
+			db.insert(TABLE_INTERESTS, null, values);
+		}
+		db.close();
+	}
+
+	public ArrayList<String> getInterests(String person) {
+
+		SQLiteDatabase db = this.getReadableDatabase();
+		String selectQuery = "SELECT  * FROM " + TABLE_INTERESTS + " WHERE "
+				+ KEY_NAME + " = " + "'" + person + "'";
+
+		Cursor c = db.rawQuery(selectQuery, null);
+		ArrayList<String> interests = new ArrayList<String>();
+
+		if (c.moveToFirst()) {
+			do {
+				String str = c.getString(c.getColumnIndex(KEY_INTERESTS));
+				interests.add(str);
+			} while (c.moveToNext());
+		}
+
+		return interests;
+	}
+
+	public void deleteInterests(String person) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		db.delete(TABLE_INTERESTS, KEY_NAME + " = ?", new String[] { person });
+		db.close();
+
+	}
 }

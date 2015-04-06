@@ -60,7 +60,7 @@ public class PersonalDetails {
 
 	public String getDOB() {
 		// TODO Auto-generated method stub
-		return this.birthday;
+		return Global.birthday;
 	}
 
 	public String getPermaddr() {

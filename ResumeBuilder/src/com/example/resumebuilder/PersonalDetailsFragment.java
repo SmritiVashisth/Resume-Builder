@@ -1,14 +1,11 @@
 package com.example.resumebuilder;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog.OnDateSetListener;
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,10 +22,10 @@ import android.widget.Toast;
 
 @SuppressLint("NewApi")
 public class PersonalDetailsFragment extends Fragment implements
-		OnClickListener, OnItemSelectedListener, OnDateSetListener {
+		OnClickListener, OnItemSelectedListener {
 
-	String[] genderArr = { "Male", "Female", "Other" };
-	String[] categoryArr = { "General", "OBC", "SC/ST" };
+	String[] genderArr = { "None", "Male", "Female", "Other" };
+	String[] categoryArr = { "None", "General", "OBC", "SC/ST" };
 	int year, month, day;
 	String date, selGender, selCategory, formattedDate;
 
@@ -83,28 +80,38 @@ public class PersonalDetailsFragment extends Fragment implements
 		return rootView;
 	}
 
-	@Override
-	public void onDateSet(DatePicker view, int year, int month, int day) {
+	OnDateSetListener ondate = new OnDateSetListener() {
 
-		Calendar c = Calendar.getInstance();
-		c.set(year, month, day);
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		formattedDate = sdf.format(c.getTime());
-		Toast.makeText(getActivity(), formattedDate, Toast.LENGTH_LONG).show();
-
-	}
+		public void onDateSet(DatePicker view, int year, int monthOfYear,
+				int dayOfMonth) {
+			Global.birthday = String.valueOf(dayOfMonth) + "-"
+					+ String.valueOf(monthOfYear + 1) + "-"
+					+ String.valueOf(year);
+			Toast.makeText(getActivity(), Global.birthday, Toast.LENGTH_LONG)
+					.show();
+		}
+	};
 
 	@Override
 	public void onClick(View view) {
 		// TODO Auto-generated method stub
 		switch (view.getId()) {
+
 		case R.id.imgBtnDate:
-			Toast.makeText(getActivity(), "Image button clicked",
-					Toast.LENGTH_LONG).show();
-			DialogFragment picker = new DatePickerFragment();
-			picker.show(getFragmentManager(), "datePicker");
+			DatePickerFragment picker = new DatePickerFragment();
+			Calendar calender = Calendar.getInstance();
+			Bundle args = new Bundle();
+			args.putInt("year", calender.get(Calendar.YEAR));
+			args.putInt("month", calender.get(Calendar.MONTH));
+			args.putInt("day", calender.get(Calendar.DAY_OF_MONTH));
+			picker.setArguments(args);
+			picker.setCallBack(ondate);
+			picker.show(getFragmentManager(), "Date Picker");
 			break;
+
 		case R.id.btnPersonalDetails:
+
+			Global.personName = etName.getText().toString();
 			Database db = new Database(getActivity());
 			PersonalDetails details = new PersonalDetails();
 			details.setName(etName.getText().toString());
@@ -114,11 +121,10 @@ public class PersonalDetailsFragment extends Fragment implements
 			details.setFather(etFather.getText().toString());
 			details.setGender(selGender);
 			details.setCategory(selCategory);
-			details.setDOB(formattedDate);
+			details.setDOB(Global.birthday);
 			details.setPermaddr(etPermanent.getText().toString());
 			details.setCurraddr(etCurrent.getText().toString());
 			db.addPersonalDetails(details);
-			db.close();
 			break;
 		}
 
@@ -132,19 +138,10 @@ public class PersonalDetailsFragment extends Fragment implements
 		case R.id.gender_spinner:
 			genderSpinner.setSelection(position);
 			selGender = (String) genderSpinner.getSelectedItem();
-			Log.i("gender", selGender);
 			break;
 		case R.id.category_spinner:
-			Log.i("tag", "Ïtem Selected");
 			categorySpinner.setSelection(position);
 			selCategory = (String) categorySpinner.getSelectedItem();
-			Log.i("category", selCategory);
-			break;
-		default:
-			Toast.makeText(
-					getActivity(),
-					"You have not selected anything, please select one option from the spinner",
-					Toast.LENGTH_LONG).show();
 			break;
 		}
 

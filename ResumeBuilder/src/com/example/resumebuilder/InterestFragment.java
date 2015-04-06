@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -58,17 +59,22 @@ public class InterestFragment extends Fragment implements OnClickListener {
 				interests.add(str);
 				etInterest.setText(null);
 				adapter.notifyDataSetChanged();
-				// reload the fragment
-				// intent = new Intent(getActivity(), InterestFragment.class);
-				// startActivity(intent);
 			}
 			break;
 		case R.id.btnSaveInterest:
-			// save to database
-			// reload fragment
 			adapter.notifyDataSetChanged();
 			btnAddInterest.setVisibility(View.INVISIBLE);
 			etInterest.setVisibility(View.INVISIBLE);
+			
+			Database db = new Database(getActivity());
+			db.addInterests(Global.personName, interests);
+			
+			Database db1 = new Database(getActivity());
+			ArrayList<String> getinterest = new ArrayList<String>();
+			getinterest = db1.getInterests(Global.personName);
+			int size = getinterest.size();
+			for (int i = 0; i < size; i++)
+				Log.i("interest", getinterest.get(i));
 			break;
 		}
 	}
