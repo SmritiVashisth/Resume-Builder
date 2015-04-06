@@ -87,7 +87,7 @@ public class PersonalDetailsFragment extends Fragment implements
 			Global.birthday = String.valueOf(dayOfMonth) + "-"
 					+ String.valueOf(monthOfYear + 1) + "-"
 					+ String.valueOf(year);
-			Toast.makeText(getActivity(), Global.birthday, Toast.LENGTH_LONG)
+			Toast.makeText(getActivity(), Global.birthday, Toast.LENGTH_SHORT)
 					.show();
 		}
 	};
@@ -110,7 +110,7 @@ public class PersonalDetailsFragment extends Fragment implements
 			break;
 
 		case R.id.btnPersonalDetails:
-
+			Toast.makeText(getActivity(), "Personal details saved", Toast.LENGTH_SHORT).show();
 			Global.personName = etName.getText().toString();
 			Database db = new Database(getActivity());
 			PersonalDetails details = new PersonalDetails();
