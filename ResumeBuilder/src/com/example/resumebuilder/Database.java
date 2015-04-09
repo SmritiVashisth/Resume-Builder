@@ -7,7 +7,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 public class Database extends SQLiteOpenHelper {
 
@@ -17,9 +16,11 @@ public class Database extends SQLiteOpenHelper {
 	// table_names
 	private static final String TABLE_PERSONAL_DETAILS = "personal_details";
 	private static final String TABLE_INTERESTS = "areas_of_interest";
+	private static final String TABLE_EXTRA_CURR = "extra_curriculars";
 
 	// common key for all tables
 	private static final String KEY_NAME = "_name";
+	private static final String KEY_ID = "_id";
 
 	// personal_details columns
 	private static final String KEY_EMAIL = "email";
@@ -34,7 +35,12 @@ public class Database extends SQLiteOpenHelper {
 
 	// interests columns
 	private static final String KEY_INTERESTS = "interests";
-	private static final String KEY_ID = "_id";
+
+	// extra curricular columns
+	private static final String KEY_TITLE = "title";
+	private static final String KEY_FROM = "from";
+	private static final String KEY_TO = "to";
+	private static final String KEY_DESCRIPTION = "description";
 
 	public Database(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -52,10 +58,17 @@ public class Database extends SQLiteOpenHelper {
 				+ " TEXT," + KEY_PERMADDR + " TEXT," + KEY_CURRADDR + " TEXT);";
 		db.execSQL(CREATE_TABLE_PERSONAL_DETAILS);
 
-		String CREATE_TABLE_INTERESTS = "CREATE TABLE " + TABLE_INTERESTS + " ( "
-				+ KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME
+		String CREATE_TABLE_INTERESTS = "CREATE TABLE " + TABLE_INTERESTS
+				+ " ( " + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME
 				+ " TEXT," + KEY_INTERESTS + " TEXT);";
 		db.execSQL(CREATE_TABLE_INTERESTS);
+
+		String CREATE_TABLE_EXTRA_CURR = "CREATE TABLE " + TABLE_EXTRA_CURR
+				+ " ( " + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME
+				+ " TEXT," + KEY_TITLE + " TEXT," + KEY_FROM + " INTEGER,"
+				+ KEY_TO + " INTEGER," + KEY_DESCRIPTION + " TEXT);";
+		db.execSQL(CREATE_TABLE_EXTRA_CURR);
+
 	}
 
 	@Override
@@ -63,6 +76,7 @@ public class Database extends SQLiteOpenHelper {
 		// TODO Auto-generated method stub
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_PERSONAL_DETAILS);
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_INTERESTS);
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_EXTRA_CURR);
 		onCreate(db);
 
 	}
@@ -87,7 +101,7 @@ public class Database extends SQLiteOpenHelper {
 	}
 
 	public PersonalDetails getPersonalDetails(String person) {
-	
+
 		SQLiteDatabase db = this.getReadableDatabase();
 		String selectQuery = "SELECT  * FROM " + TABLE_PERSONAL_DETAILS
 				+ " WHERE " + KEY_NAME + " = " + "'" + person + "'";
@@ -157,6 +171,19 @@ public class Database extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete(TABLE_INTERESTS, KEY_NAME + " = ?", new String[] { person });
 		db.close();
+	}
 
+	// EXTRA CURRICULUR TABLE METHODS
+
+	public void addExtraCurricular(String person, String title, int from, int to, String description) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put(KEY_NAME, person);
+		values.put(KEY_TITLE, title);
+		values.put(KEY_FROM, from);
+		values.put(KEY_TO, to);
+		values.put(KEY_DESCRIPTION, description);
+		db.insert(TABLE_EXTRA_CURR, null, values);
+		db.close();
 	}
 }

@@ -68,13 +68,6 @@ public class InterestFragment extends Fragment implements OnClickListener {
 			
 			Database db = new Database(getActivity());
 			db.addInterests(Global.personName, interests);
-			
-			Database db1 = new Database(getActivity());
-			ArrayList<String> getinterest = new ArrayList<String>();
-			getinterest = db1.getInterests(Global.personName);
-			int size = getinterest.size();
-			for (int i = 0; i < size; i++)
-				Log.i("interest", getinterest.get(i));
 			break;
 		}
 	}
