@@ -2,7 +2,6 @@ package com.example.resumebuilder;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +9,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 @SuppressLint("NewApi")
@@ -18,6 +18,7 @@ public class ExtraCurrFragment extends Fragment implements OnClickListener {
 	Button btnAddExtraCurr, btnSaveExtraCurr;
 	TextView tvExtraCurr, tvDuration;
 	EditText etTitle, etFrom, etTo, etDescription;
+	ListView extraCurrList;
 
 	public ExtraCurrFragment() {
 	}
@@ -34,6 +35,7 @@ public class ExtraCurrFragment extends Fragment implements OnClickListener {
 		etFrom = (EditText) rootView.findViewById(R.id.etFrom);
 		etTo = (EditText) rootView.findViewById(R.id.etTo);
 		etTitle = (EditText) rootView.findViewById(R.id.etTitle);
+		extraCurrList = (ListView) rootView.findViewById(R.id.lvExtraCurr);
 		btnAddExtraCurr = (Button) rootView.findViewById(R.id.btnAddExtraCurr);
 		btnSaveExtraCurr = (Button) rootView
 				.findViewById(R.id.btnSaveExtraCurr);
@@ -50,7 +52,15 @@ public class ExtraCurrFragment extends Fragment implements OnClickListener {
 		// TODO Auto-generated method stub
 		switch (view.getId()) {
 		case R.id.btnAddExtraCurr:
-			// display added items to custom list view
+			String strTitle = etTitle.getText().toString();
+			int intFrom = Integer.parseInt(etFrom.getText().toString());
+			int intTo = Integer.parseInt(etTo.getText().toString());
+			String strDescription = etDescription.getText().toString();
+
+			CustomListAdapter adapter = new CustomListAdapter(getActivity(),
+					strTitle, strDescription, intFrom, intTo);
+			extraCurrList.setAdapter(adapter);
+
 			tvExtraCurr.setText("Extra-Curriculur Activities");
 			Database db = new Database(getActivity());
 			db.addExtraCurricular(Global.personName, etTitle.getText()
@@ -61,13 +71,12 @@ public class ExtraCurrFragment extends Fragment implements OnClickListener {
 			etFrom.setText(null);
 			etTo.setText(null);
 			etDescription.setText(null);
-			// adapter.notifydataSetChanged();
+			adapter.notifyDataSetChanged();
 			break;
+			
 		case R.id.btnSaveExtraCurr:
-			//make the add button invisible
 			btnAddExtraCurr.setVisibility(View.INVISIBLE);
 			break;
 		}
 	}
-
 }
