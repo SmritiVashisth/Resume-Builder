@@ -38,8 +38,8 @@ public class Database extends SQLiteOpenHelper {
 
 	// extra curricular columns
 	private static final String KEY_TITLE = "title";
-	private static final String KEY_FROM = "from";
-	private static final String KEY_TO = "to";
+	private static final String KEY_FROM = "fromYear";
+	private static final String KEY_TO = "toYear";
 	private static final String KEY_DESCRIPTION = "description";
 
 	public Database(Context context) {
@@ -64,9 +64,9 @@ public class Database extends SQLiteOpenHelper {
 		db.execSQL(CREATE_TABLE_INTERESTS);
 
 		String CREATE_TABLE_EXTRA_CURR = "CREATE TABLE " + TABLE_EXTRA_CURR
-				+ " ( " + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME
-				+ " TEXT," + KEY_TITLE + " TEXT," + KEY_FROM + " INTEGER,"
-				+ KEY_TO + " INTEGER," + KEY_DESCRIPTION + " TEXT);";
+				+ " ( " + KEY_ID + " INTEGER PRIMARY KEY, " + KEY_NAME
+				+ " TEXT, " + KEY_TITLE + " TEXT, " + KEY_FROM + " INTEGER, "
+				+ KEY_TO + " INTEGER, " + KEY_DESCRIPTION + " TEXT);";
 		db.execSQL(CREATE_TABLE_EXTRA_CURR);
 
 	}
@@ -175,7 +175,8 @@ public class Database extends SQLiteOpenHelper {
 
 	// EXTRA CURRICULUR TABLE METHODS
 
-	public void addExtraCurricular(String person, String title, int from, int to, String description) {
+	public void addExtraCurricular(String person, String title, int from,
+			int to, String description) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(KEY_NAME, person);
@@ -184,6 +185,40 @@ public class Database extends SQLiteOpenHelper {
 		values.put(KEY_TO, to);
 		values.put(KEY_DESCRIPTION, description);
 		db.insert(TABLE_EXTRA_CURR, null, values);
+		db.close();
+	}
+
+	public ArrayList<ExtraCurriculars> getExtraCurricular(String person) {
+
+		SQLiteDatabase db = this.getReadableDatabase();
+		String selectQuery = "SELECT  * FROM " + TABLE_EXTRA_CURR + " WHERE "
+				+ KEY_NAME + " = " + "'" + person + "'";
+
+		Cursor c = db.rawQuery(selectQuery, null);
+		ArrayList<ExtraCurriculars> extracurr = new ArrayList<ExtraCurriculars>();
+
+		if (c.moveToFirst()) {
+			do {
+				ExtraCurriculars curr = new ExtraCurriculars();
+				curr.setTitle(c.getString(c.getColumnIndex(KEY_TITLE)));
+				curr.setFrom(Integer.parseInt(c.getString(c
+						.getColumnIndex(KEY_FROM))));
+				curr.setTo(Integer.parseInt(c.getString(c
+						.getColumnIndex(KEY_TO))));
+				curr.setDescription(c.getString(c
+						.getColumnIndex(KEY_DESCRIPTION)));
+				extracurr.add(curr);
+				c.close();
+			} while (c.moveToNext());
+		}
+
+		return extracurr;
+
+	}
+
+	public void deleteExtraCurriculurs(String person) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		db.delete(TABLE_INTERESTS, KEY_NAME + " = ?", new String[] { person });
 		db.close();
 	}
 }
