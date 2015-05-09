@@ -17,6 +17,7 @@ public class Database extends SQLiteOpenHelper {
 	private static final String TABLE_PERSONAL_DETAILS = "personal_details";
 	private static final String TABLE_INTERESTS = "areas_of_interest";
 	private static final String TABLE_EXTRA_CURR = "extra_curriculars";
+	private static final String TABLE_WORK_EXP = "work_experience";
 
 	// common key for all tables
 	private static final String KEY_NAME = "_name";
@@ -41,6 +42,10 @@ public class Database extends SQLiteOpenHelper {
 	private static final String KEY_FROM = "fromYear";
 	private static final String KEY_TO = "toYear";
 	private static final String KEY_DESCRIPTION = "description";
+
+	// work experience columns
+	private static final String KEY_POSITION = "position";
+	private static final String KEY_PLACE = "place";
 
 	public Database(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -69,6 +74,13 @@ public class Database extends SQLiteOpenHelper {
 				+ KEY_TO + " INTEGER, " + KEY_DESCRIPTION + " TEXT);";
 		db.execSQL(CREATE_TABLE_EXTRA_CURR);
 
+		String CREATE_TABLE_WORK_EXP = "CREATE TABLE " + TABLE_WORK_EXP + " ( "
+				+ KEY_ID + " INTEGER PRIMARY KEY, " + KEY_NAME + " TEXT, "
+				+ KEY_POSITION + " TEXT, " + KEY_PLACE + " TEXT, " + KEY_FROM
+				+ " INTEGER, " + KEY_TO + " INTEGER, " + KEY_DESCRIPTION
+				+ " TEXT);";
+		db.execSQL(CREATE_TABLE_WORK_EXP);
+
 	}
 
 	@Override
@@ -77,6 +89,7 @@ public class Database extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_PERSONAL_DETAILS);
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_INTERESTS);
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_EXTRA_CURR);
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_WORK_EXP);
 		onCreate(db);
 
 	}
@@ -217,7 +230,57 @@ public class Database extends SQLiteOpenHelper {
 
 	public void deleteExtraCurriculurs(String person) {
 		SQLiteDatabase db = this.getWritableDatabase();
-		db.delete(TABLE_INTERESTS, KEY_NAME + " = ?", new String[] { person });
+		db.delete(TABLE_EXTRA_CURR, KEY_NAME + " = ?", new String[] { person });
+		db.close();
+	}
+
+	// WORK EXPERIENCE TABLE METHODS
+
+	public void addWorkExperience(String person, String position, String place,
+			int from, int to, String description) {
+		// TODO Auto-generated method stub
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put(KEY_NAME, person);
+		values.put(KEY_POSITION, position);
+		values.put(KEY_PLACE, place);
+		values.put(KEY_FROM, from);
+		values.put(KEY_TO, to);
+		values.put(KEY_DESCRIPTION, description);
+		db.insert(TABLE_WORK_EXP, null, values);
+		db.close();
+	}
+
+	public ArrayList<WorkExperience> getWorkExperience(String person) {
+
+		SQLiteDatabase db = this.getReadableDatabase();
+		String selectQuery = "SELECT  * FROM " + TABLE_WORK_EXP + " WHERE "
+				+ KEY_NAME + " = " + "'" + person + "'";
+
+		Cursor c = db.rawQuery(selectQuery, null);
+		ArrayList<WorkExperience> workexp = new ArrayList<WorkExperience>();
+
+		if (c.moveToFirst()) {
+			do {
+				WorkExperience exp = new WorkExperience();
+				exp.setPosition(c.getString(c.getColumnIndex(KEY_POSITION)));
+				exp.setPlace(c.getString(c.getColumnIndex(KEY_PLACE)));
+				exp.setFrom(Integer.parseInt(c.getString(c
+						.getColumnIndex(KEY_FROM))));
+				exp.setTo(Integer.parseInt(c.getString(c.getColumnIndex(KEY_TO))));
+				exp.setDescription(c.getString(c
+						.getColumnIndex(KEY_DESCRIPTION)));
+				workexp.add(exp);
+			} while (c.moveToNext());
+		}
+		c.close();
+		return workexp;
+
+	}
+
+	public void deleteWorkExperience(String person) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		db.delete(TABLE_WORK_EXP, KEY_NAME + " = ?", new String[] { person });
 		db.close();
 	}
 }
