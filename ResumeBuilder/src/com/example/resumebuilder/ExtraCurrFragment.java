@@ -73,7 +73,7 @@ public class ExtraCurrFragment extends Fragment implements OnClickListener {
 			etDescription.setText(null);
 			adapter.notifyDataSetChanged();
 			break;
-			
+
 		case R.id.btnSaveExtraCurr:
 			btnAddExtraCurr.setVisibility(View.INVISIBLE);
 			break;

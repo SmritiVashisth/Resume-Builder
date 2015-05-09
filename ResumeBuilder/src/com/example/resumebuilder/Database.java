@@ -208,10 +208,9 @@ public class Database extends SQLiteOpenHelper {
 				curr.setDescription(c.getString(c
 						.getColumnIndex(KEY_DESCRIPTION)));
 				extracurr.add(curr);
-				c.close();
 			} while (c.moveToNext());
 		}
-
+		c.close();
 		return extracurr;
 
 	}
